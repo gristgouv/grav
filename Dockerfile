@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:0.7 AS requirements
+FROM ghcr.io/astral-sh/uv:0.7-alpine AS requirements
 
 WORKDIR /app
 
