@@ -6,7 +6,7 @@ COPY uv.lock pyproject.toml ./
 
 RUN uv export --no-dev --locked > requirements.txt
 
-FROM python:3.13
+FROM python:3.13-alpine
 
 WORKDIR /app
 
