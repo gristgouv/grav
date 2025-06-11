@@ -50,6 +50,11 @@ def configure_routes(
             methods=doc_wk_methods,
         ),
         Route(
+            "/dw/{dw}/v/{v}/uploads",
+            scan_forward_doc_worker,
+            methods=doc_wk_methods,
+        ),
+        Route(
             "/o/{org}/api/docs/{docid}/attachments",
             scan_forward_home_worker,
             methods=home_wk_methods,
