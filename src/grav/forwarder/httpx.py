@@ -29,6 +29,8 @@ class HttpxForwarder(BaseForwarder):
             params=request.query_params,
             content=await request.body(),
         )
+        logger.debug(f"request headers {request.headers}")
+        logger.debug(f"forwarded headers {fwd_request.headers}")
 
         response = await self._CLIENT.send(fwd_request)
         logger.debug("request forwarded, returning response")
