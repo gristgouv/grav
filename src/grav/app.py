@@ -8,10 +8,9 @@ from .av_scanner.syndetect import SyndetectAVScanner
 from .forwarder.httpx import HttpxForwarder
 from .routes import configure_routes
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
 env = Env(prefix="GRAV_")
+
+LOG_LEVEL = env.str("LOG_LEVEL", "INFO")
 
 SYNDETECT_API_URL = env.url("SYNDETECT_API_URL")
 SYNDETECT_API_TOKEN = env.str("SYNDETECT_API_TOKEN")
@@ -29,6 +28,8 @@ FORWARD_HOME_WORKER_ORIGIN = env.url(
     require_tld=False,
 )
 
+logging.basicConfig(level=LOG_LEVEL)
+logger = logging.getLogger(__name__)
 
 av_scanner = SyndetectAVScanner(
     SYNDETECT_API_URL.geturl(), SYNDETECT_API_TOKEN, SYNDETECT_API_RETRIES
