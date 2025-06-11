@@ -12,7 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 class SyndetectAVScanner(BaseAVScanner):
-    def __init__(self, api_url: str, api_token: str, retries: int = 10) -> None:
+    def __init__(
+        self,
+        api_url: str,
+        api_token: str,
+        retries: int = 10,
+        max_poll_time: int = 5,
+        poll_time_factor: float = 1.1,
+    ) -> None:
         super().__init__()
         self._API_URL = api_url
         logger.debug(f"configured api url {self._API_URL}")
@@ -22,6 +29,9 @@ class SyndetectAVScanner(BaseAVScanner):
             base_url=self._API_URL,
             headers={"X-Auth-token": self._API_TOKEN},
         )
+
+        self._MAX_POLL_TIME = max_poll_time
+        self._POLL_TIME_FACTOR = poll_time_factor
 
     class _IntermediateResult(enum.Enum):
         NOT_SCANNED = enum.auto()
@@ -39,7 +49,9 @@ class SyndetectAVScanner(BaseAVScanner):
             logger.debug(f"file {digest} submitted")
             retries = 0
             while True:
-                await anyio.sleep(5)
+                await anyio.sleep(
+                    min(self._POLL_TIME_FACTOR**retries, self._MAX_POLL_TIME)
+                )
                 logger.debug(f"file {digest} checking results (retry {retries})")
                 scan_result = await self._check_sha256(digest)
                 if scan_result != self._IntermediateResult.SCANNING:
